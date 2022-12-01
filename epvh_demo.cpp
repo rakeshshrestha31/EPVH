@@ -35,6 +35,7 @@
 #include "opencvincludes.h"
 #include "display3droutines.h"
 #include "vtkTriangleFilter.h"
+#include "vtkPLYWriter.h"
 
 #ifdef WIN32
 #include "conio.h"
@@ -49,8 +50,20 @@ int main( int argc , char **argv )
   
   tr::ContourIO contourReader;
 
-  std::string contourFilePath = DATASET_DIR + std::string("/alien-contour.txt");
-  std::string cameraFilepPath = DATASET_DIR + std::string("/alien-camera.txt");
+  // std::string contourFilePath = DATASET_DIR + std::string("/alien-contour.txt");
+  // std::string cameraFilepPath = DATASET_DIR + std::string("/alien-camera.txt");
+
+  if (argc < 4)
+  {
+      std::cout << "Usage: " << argv[0] << " <contour_file> <camera_file> <output_file>" << std::endl;
+      exit(0);
+  }
+
+  std::string contourFilePath = argv[1];
+  std::string cameraFilepPath = argv[2];
+  std::string outputFilePath = argv[3];
+  std::cout << "contourFilePath " << contourFilePath << std::endl;
+  std::cout << "cameraFilePath " << cameraFilepPath << std::endl;
 
   std::vector< std::vector< Eigen::Vector2d > > contours;
   std::vector< Eigen::Matrix< double, 3, 4 > > projectionMatrices;
@@ -140,7 +153,14 @@ int main( int argc , char **argv )
 
   //polygons->DeepCopy( triangulator->GetOutput() );
 
-  tr::Display3DRoutines::displayPolyData(polygons);
+  // Write to PLY File
+  auto writer = vtkSmartPointer< vtkPLYWriter >::New();
+  writer->SetFileName(outputFilePath.c_str());
+  writer->SetInputData(polygons);
+  writer->Update();
+
+  // display
+  // tr::Display3DRoutines::displayPolyData(polygons);
 
 
 #ifdef WIN32
