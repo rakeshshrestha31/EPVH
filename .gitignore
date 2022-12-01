@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 *.9cb3dd5
-*.user
 CMakeLists.txt.user
-*.user
-=======
 build/*
 *.user
->>>>>>> origin/master
+
+# vim swap files
+*.swp
+*.swo
